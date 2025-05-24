@@ -8,10 +8,16 @@
     <padding>
         <Insets top="10" right="10" bottom="10" left="10"/>
     </padding>
-    <Label text="Canciones:"/>
+    <Label text="Cançons:"/>
     <ListView fx:id="songListView" prefHeight="400" prefWidth="600" />
     <HBox spacing="10">
         <ComboBox fx:id="artistComboBox" prefWidth="200" />
         <ComboBox fx:id="albumComboBox" prefWidth="200" />
+    </HBox>
+    <!-- Botones para añadir, modificar y eliminar canción -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Afegir cancó" onAction="#addSong"/>
+        <Button text="Modificar cancó" onAction="#modifySong"/>
+        <Button text="Eliminar cancó" onAction="#deleteSong"/>
     </HBox>
 </VBox>

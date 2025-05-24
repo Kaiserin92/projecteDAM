@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.sql.ResultSet;
 
 /**
  * @author giser
@@ -19,11 +20,25 @@ public class DatabaseInitializer {
      * Inicialitza la base de dades executant les sentències SQL contingudes en el fitxer "/musicdb.sql".
      * El mètode llegeix el fitxer SQL, ignora les línies que són comentaris o estan buides,
      * separa les consultes per punt i coma i les executa una per una.
+     * Amb aquesta modificació, s'executa la inicialització només si la taula "song" no existeix.
      */
     public static void initialize() {
         // Utilitzem un try-with-resources per assegurar-nos que la connexió es tanca adequadament
         try (Connection conn = DatabaseConnection.getConnection()){
- 
+            
+            // Comprovem si la taula "song" existeix (assumeix que la base de dades ja està inicialitzada si existeix)
+            boolean isInitialized = false;
+            java.sql.DatabaseMetaData meta = conn.getMetaData();
+            try (ResultSet rs = meta.getTables(null, null, "song", new String[] {"TABLE"})) {
+                if(rs.next()){
+                    isInitialized = true;
+                }
+            }
+            if (isInitialized) {
+                System.out.println("Base de dades ja inicialitzada, saltant inicialització.");
+                return;
+            }
+            
             // Obte les dades del fitxer SQL ubicat dins del directori de recursos
             InputStream is = DatabaseInitializer.class.getResourceAsStream("/musicdb.sql");
             if (is == null) {
